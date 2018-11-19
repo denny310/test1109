@@ -9,20 +9,29 @@
   $sender_txt = $json_obj->events[0]->message->text; //取得訊息內容
   $sender_replyToken = $json_obj->events[0]->replyToken; //取得訊息的replyToken
   
+  $sender_txt=rawurlencode($sender_txt); //因為使用get的方式呼叫luis api，所以需要轉碼
+  $ch = curl_init('https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/2f497849-731b-4eab-b3bf-22cc2eb3749f?subscription-key=88a2804601b54cfbb8890c7b5d9b1b8f&timezoneOffset=-360&q='.$sender_txt);                                                                      
+  curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");                                                                                                                          
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  $result_str = curl_exec($ch);
+  fwrite($myfile, "\xEF\xBB\xBF".$result_str); //在字串前加上\xEF\xBB\xBF轉成utf8格式
+  $result = json_decode($result_str);
+  $ans_txt = $result -> topScoringIntent -> intent;
   $response = array (
-    "replyToken" => $sender_replyToken,
+    "to" => $sender_userid,
     "messages" => array (
       array (
         "type" => "text",
-        "text" => "Hello. You say". $sender_txt
+        "text" => $ans_txt
       )
     )
   );
   
+  
  fwrite($myfile, "\xEF\xBB\xBF".json_encode($response)); //在字串前面加上\xEF\xBB\xBF轉成utf8格式
   $header[] = "Content-Type: application/json";
   $header[] = "Authorization: Bearer kqqMhbUajwv72s1+TGeFOeFpXt7Ax4M2U24CqJDXI04sIrnkPpox758Gtg2XJaEZSiz9hecM3ehQZN+nv1d9wNmF3I8UYtQ8SJ2c1I178JOPjcw9Of25TgLPstQqRYfBGTxTH4NQgeWl6HES8AIMgAdB04t89/1O/w1cDnyilFU=";
-  $ch = curl_init("https://api.line.me/v2/bot/message/reply");
+  $ch = curl_init("https://api.line.me/v2/bot/message/push");
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
   curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($response));                                                                  
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
