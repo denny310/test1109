@@ -28,7 +28,7 @@
 	  array (
 		"image" => array (
 		  "source" => array (
-			"imageUri" => "http://139.59.123.8/class/learning/".$imageId.".jpeg"
+			"imageUri" => "http://139.59.123.8/class/Lbot/".$imageId.".jpeg"
 		  )
 		),
 		"features" => array (
@@ -40,7 +40,7 @@
 	  )
 	)
   );
-  $ch = curl_init('https://vision.googleapis.com/v1/images:annotate?key=AIzaSyCiyGiCfjzzPR1JS8PrAxcsQWHdbycVwmg');                                                                      
+  $ch = curl_init('https://vision.googleapis.com/v1/images:annotate?key=AIzaSyC8-n39i_1_ui-fbnfC1q3fVGK-g5tZ128');                                                                      
   curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
   curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));                                                                  
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
